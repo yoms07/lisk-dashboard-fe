@@ -10,6 +10,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 
 export function ProfileDropdown() {
@@ -55,7 +56,11 @@ export function ProfileDropdown() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            signOut({ redirectTo: "/auth/login" });
+          }}
+        >
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>

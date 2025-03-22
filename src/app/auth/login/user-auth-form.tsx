@@ -1,3 +1,4 @@
+"use client";
 import { HTMLAttributes, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -16,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/password-input";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -108,28 +110,30 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </span>
               </div>
             </div>
-
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                className="grow"
-                type="button"
-                disabled={isLoading}
-              >
-                <IconBrandGithub className="h-4 w-4" /> GitHub
-              </Button>
-              <Button
-                variant="outline"
-                className="grow"
-                type="button"
-                disabled={isLoading}
-              >
-                <IconBrandFacebook className="h-4 w-4" /> Facebook
-              </Button>
-            </div>
           </div>
         </form>
       </Form>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          className="grow"
+          type="button"
+          disabled={isLoading}
+          onClick={() => {
+            signIn("github", { redirectTo: "/dashboard" });
+          }}
+        >
+          <IconBrandGithub className="h-4 w-4" /> GitHub
+        </Button>
+        <Button
+          variant="outline"
+          className="grow"
+          type="button"
+          disabled={isLoading}
+        >
+          <IconBrandFacebook className="h-4 w-4" /> Facebook
+        </Button>
+      </div>
     </div>
   );
 }
