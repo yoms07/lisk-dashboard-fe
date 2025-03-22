@@ -1,6 +1,6 @@
 "use client";
-import ViteLogo from "@/assets/vite.svg";
 import { UserAuthForm } from "./user-auth-form";
+import { HeroIconCloud } from "./cloud-icon";
 
 export default function SignIn2() {
   return (
@@ -23,22 +23,11 @@ export default function SignIn2() {
           Shadcn Admin
         </div>
 
-        <img
-          src={ViteLogo}
-          className="relative m-auto"
-          width={301}
-          height={60}
-          alt="Vite"
-        />
+        <HeroIconCloud />
 
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
-            <p className="text-lg">
-              &ldquo;This template has saved me countless hours of work and
-              helped me deliver stunning designs to my clients faster than ever
-              before.&rdquo;
-            </p>
-            <footer className="text-sm">John Doe</footer>
+            <p className="text-lg">&ldquo;Ease of pay. With lisk-pg.&rdquo;</p>
           </blockquote>
         </div>
       </div>
