@@ -8,7 +8,7 @@ const sessionResponseDto = baseResponseSchema.extend({
 export async function getServerSession(token: string) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/session?token=${token}`,
+      `${process.env.SERVER_API_URL}/auth/session?token=${token}`,
       {
         method: "GET",
         headers: {

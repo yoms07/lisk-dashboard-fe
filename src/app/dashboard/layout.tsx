@@ -4,6 +4,7 @@ import SkipToMain from "@/components/skip-to-main";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { cn } from "@/lib/utils";
 import { SearchProvider } from "@/provider/search";
+import { getSession } from "@/lib/iron-session";
 
 export default async function DashboardLayout({
   children,
@@ -11,6 +12,7 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const defaultOpen = (await cookies()).get("sidebarOpen")?.value !== "false";
+  console.log(await getSession());
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>

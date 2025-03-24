@@ -1,3 +1,4 @@
+"use server";
 import { z } from "zod";
 import { getSession } from "@/lib/iron-session";
 import { verifyOtpDto, authResponseSchema } from "./schema";
@@ -5,9 +6,10 @@ import { verifyOtpDto, authResponseSchema } from "./schema";
 export async function verifyOtp(data: unknown) {
   try {
     const validatedData = verifyOtpDto.parse(data);
+    console.log(`${process.env.SERVER_API_URL}/auth/verify-otp`);
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/verify-otp`,
+      `${process.env.SERVER_API_URL}/auth/verify-otp`,
       {
         method: "POST",
         headers: {

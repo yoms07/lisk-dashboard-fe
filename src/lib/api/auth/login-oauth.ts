@@ -6,9 +6,8 @@ import { createOauthUserDto, authResponseSchema } from "./schema";
 export async function oauthLogin(provider: string, data: unknown) {
   try {
     const validatedData = createOauthUserDto.parse(data);
-
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/oauth/${provider}/login`,
+      `${process.env.SERVER_API_URL}/auth/oauth/${provider}/login`,
       {
         method: "POST",
         headers: {
@@ -20,7 +19,7 @@ export async function oauthLogin(provider: string, data: unknown) {
 
     const result = await response.json();
 
-    if (result.status !== 200) {
+    if (result.status >= 300) {
       throw new Error(result.message || "OAuth login failed");
     }
 

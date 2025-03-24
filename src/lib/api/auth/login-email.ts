@@ -11,22 +11,22 @@ const otpResponseDto = z.object({
   message: z.string(),
   data: z.object({
     user_id: z.string(),
-    expires_at: z.date(),
+    expires_at: z.coerce.date(),
     is_used: z.boolean(),
     attempt_count: z.number(),
-    created_at: z.date(),
-    updated_at: z.date(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date().optional(),
   }),
 });
 
-type OtpResponse = z.infer<typeof otpResponseDto>;
+export type OtpResponse = z.infer<typeof otpResponseDto>;
 
 export async function emailLogin(data: unknown) {
   try {
     const { email, password } = emailLoginSchema.parse(data);
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/email/login`,
+      `${process.env.SERVER_API_URL}/auth/email/login`,
       {
         method: "POST",
         headers: {
@@ -38,15 +38,18 @@ export async function emailLogin(data: unknown) {
 
     const result = await response.json();
 
-    if (result.status !== 200) {
+    if (result.status >= 300) {
       throw new Error(result.message || "Login failed");
     }
 
-    const otpResponse: OtpResponse = otpResponseDto.parse(result.data);
-
+    const { data: otpResponse, error } = otpResponseDto.safeParse(result);
+    console.error(error);
+    if (!otpResponse) {
+      throw new Error("Invalid response from server");
+    }
     return {
       status: 200,
-      message: otpResponse.message,
+      message: otpResponse?.message,
       data: null,
     };
   } catch (error) {

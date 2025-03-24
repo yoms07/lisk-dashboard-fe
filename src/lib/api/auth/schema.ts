@@ -7,9 +7,9 @@ export const sessionSchema = z.object({
   emailVerified: z.boolean(),
   email: z.string().email(),
   isActive: z.boolean(),
-  issuedAt: z.date(),
-  expiresAt: z.date(),
-  refreshExpiresAt: z.date().optional(),
+  issuedAt: z.coerce.date(),
+  expiresAt: z.coerce.date(),
+  refreshExpiresAt: z.coerce.date().optional(),
   userAgent: z.string().optional(),
   ipAddress: z.string().optional(),
 });
@@ -17,6 +17,7 @@ export const sessionSchema = z.object({
 export const baseResponseSchema = z.object({
   status: z.number(),
   message: z.string(),
+  data: z.unknown(),
 });
 
 export const authResponseSchema = baseResponseSchema.extend({
@@ -25,6 +26,25 @@ export const authResponseSchema = baseResponseSchema.extend({
     refreshToken: z.string(),
     session: sessionSchema,
   }),
+});
+
+export const emailLoginResponseSchema = baseResponseSchema.extend({
+  data: z.object({
+    user_id: z.string(),
+    expires_at: z.date(),
+    is_used: z.boolean(),
+    attempt_count: z.number(),
+    created_at: z.date(),
+    updated_at: z.date(),
+  }),
+});
+
+export const registerEmailResponseSchema = baseResponseSchema.extend({
+  data: z.null(),
+});
+
+export const sessionResponseSchema = baseResponseSchema.extend({
+  data: sessionSchema,
 });
 
 export const createOauthUserDto = z.object({
@@ -62,3 +82,4 @@ export const refreshTokenDto = z.object({
 
 export type Session = z.infer<typeof sessionSchema>;
 export type AuthResponse = z.infer<typeof authResponseSchema>;
+export type BaseResponse<T> = z.infer<typeof baseResponseSchema> & { data: T };

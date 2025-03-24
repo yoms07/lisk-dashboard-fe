@@ -8,7 +8,7 @@ export async function refreshSession(data: unknown) {
     const validatedData = refreshTokenDto.parse(data);
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/session/refresh`,
+      `${process.env.SERVER_API_URL}/auth/session/refresh`,
       {
         method: "POST",
         headers: {

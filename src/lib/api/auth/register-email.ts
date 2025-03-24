@@ -7,7 +7,7 @@ export async function registerEmail(data: unknown) {
     const validatedData = registerEmailDto.parse(data);
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/register-email`,
+      `${process.env.SERVER_API_URL}/auth/register-email`,
       {
         method: "POST",
         headers: {
