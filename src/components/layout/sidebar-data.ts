@@ -1,6 +1,5 @@
 import {
   IconBarrierBlock,
-  IconBrowserCheck,
   IconBug,
   IconChecklist,
   IconError404,
@@ -18,6 +17,7 @@ import {
   IconUserCog,
   IconUserOff,
   IconUsers,
+  IconWallet,
 } from "@tabler/icons-react";
 import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
 import { type SidebarData } from "./types";
@@ -55,13 +55,18 @@ export const sidebarData: SidebarData = {
           icon: IconLayoutDashboard,
         },
         {
-          title: "Tasks",
-          url: "/tasks",
+          title: "Payments",
+          url: "/dashboard/payments",
+          icon: IconLayoutDashboard,
+        },
+        {
+          title: "Products",
+          url: "/products",
           icon: IconChecklist,
         },
         {
-          title: "Apps",
-          url: "/apps",
+          title: "Webhook Logs",
+          url: "/webhook-logs",
           icon: IconPackages,
         },
         {
@@ -147,29 +152,29 @@ export const sidebarData: SidebarData = {
           icon: IconSettings,
           items: [
             {
-              title: "Profile",
-              url: "/settings",
+              title: "Business Profile",
+              url: "/dashboard/settings/business-profile",
               icon: IconUserCog,
             },
             {
-              title: "Account",
-              url: "/settings/account",
+              title: "Wallet",
+              url: "/dashboard/settings/wallet",
+              icon: IconWallet,
+            },
+            {
+              title: "API Keys",
+              url: "/dashboard/settings/api-key",
               icon: IconTool,
             },
             {
-              title: "Appearance",
-              url: "/settings/appearance",
+              title: "Checkout UI",
+              url: "/dashboard/settings/checkout-ui",
               icon: IconPalette,
             },
             {
-              title: "Notifications",
-              url: "/settings/notifications",
+              title: "Webhooks",
+              url: "/dashboard/settings/webhook",
               icon: IconNotification,
-            },
-            {
-              title: "Display",
-              url: "/settings/display",
-              icon: IconBrowserCheck,
             },
           ],
         },

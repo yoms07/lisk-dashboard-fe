@@ -17,12 +17,16 @@ const sessionOptions: SessionOptions = {
 };
 
 export const getSession = async (): Promise<IronSession<IronSessionData>> => {
-  console.log("GET SESSION");
   const session = await getIronSession<IronSessionData>(
     await cookies(),
     sessionOptions
   );
   return session;
+};
+
+export const deleteSession = async (): Promise<void> => {
+  const session = await getSession();
+  session.destroy();
 };
 
 declare module "iron-session" {
