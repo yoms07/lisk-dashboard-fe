@@ -8,9 +8,6 @@ import { getSession } from "@/lib/iron-session";
 import { redirect } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { TopNav } from "@/components/layout/top-nav";
-import { Search } from "@/components/global-search";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { ProfileDropdown } from "@/components/profile-dropdown";
 
 const topNav = [
   {

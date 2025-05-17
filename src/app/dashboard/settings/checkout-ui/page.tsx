@@ -7,9 +7,9 @@ import { useUpdateCheckoutUi } from "@/lib/hooks/useUpdateCheckoutUi";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckoutPreview } from "@/components/checkout-preview";
+import CheckoutPreview from "@/components/checkout-preview";
 import { CheckoutUiCustomization } from "@/lib/api/business_profile/schema";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const defaultCustomization: CheckoutUiCustomization = {
   primaryColor: "#0066FF",
@@ -30,14 +30,36 @@ export default function CheckoutUiPage() {
   const [customization, setCustomization] = useState<CheckoutUiCustomization>(
     selectedProfile?.checkout_customization || defaultCustomization
   );
+  const [lastSavedCustomization, setLastSavedCustomization] =
+    useState<CheckoutUiCustomization>(
+      selectedProfile?.checkout_customization || defaultCustomization
+    );
   const updateCheckoutUi = useUpdateCheckoutUi();
+
+  useEffect(() => {
+    const newCustomization =
+      selectedProfile?.checkout_customization || defaultCustomization;
+    setCustomization(newCustomization);
+    setLastSavedCustomization(newCustomization);
+  }, [selectedProfile?.checkout_customization]);
 
   const handleUpdate = () => {
     if (!selectedProfile) return;
-    updateCheckoutUi.mutate({
-      businessId: selectedProfile.id,
-      customization,
-    });
+    updateCheckoutUi.mutate(
+      {
+        businessId: selectedProfile.id,
+        customization,
+      },
+      {
+        onSuccess: () => {
+          setLastSavedCustomization(customization);
+        },
+      }
+    );
+  };
+
+  const handleUndo = () => {
+    setCustomization(lastSavedCustomization);
   };
 
   const handleChange = (key: keyof CheckoutUiCustomization, value: string) => {
@@ -55,61 +77,54 @@ export default function CheckoutUiPage() {
     );
   }
 
+  // Helper for color fields
+  const renderColorField = (
+    label: string,
+    key: keyof CheckoutUiCustomization
+  ) => (
+    <div className="space-y-2">
+      <Label htmlFor={key}>{label}</Label>
+      <div className="flex items-center gap-3">
+        <div
+          className="w-8 h-8 rounded-md border"
+          style={{ background: customization[key] || "#fff" }}
+        />
+        <Input
+          id={key}
+          type="text"
+          value={customization[key] as string}
+          onChange={(e) => handleChange(key, e.target.value)}
+          className="w-32"
+        />
+        <input
+          type="color"
+          value={customization[key] as string}
+          onChange={(e) => handleChange(key, e.target.value)}
+          className="w-8 h-8 p-0 border-none bg-transparent cursor-pointer"
+          style={{ minWidth: 0 }}
+        />
+      </div>
+    </div>
+  );
+
   return (
-    <div className="space-y-6">
+    <div className="w-full min-h-screen">
       <DashboardHeader
         title="Checkout UI"
         description="Customize the appearance of your checkout UI"
       />
-
-      <div className="grid grid-cols-2 gap-6">
-        <Card className="p-6">
+      <div className="w-full h-full flex gap-6 mt-2">
+        <Card className="p-6 flex-[2] bg-transparent border-none">
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="primaryColor">Primary Color</Label>
-                <Input
-                  id="primaryColor"
-                  type="color"
-                  value={customization.primaryColor}
-                  onChange={(e) => handleChange("primaryColor", e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="topBarColor">Top Bar Color</Label>
-                <Input
-                  id="topBarColor"
-                  type="color"
-                  value={customization.topBarColor}
-                  onChange={(e) => handleChange("topBarColor", e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="topBarTextColor">Top Bar Text Color</Label>
-                <Input
-                  id="topBarTextColor"
-                  type="color"
-                  value={customization.topBarTextColor}
-                  onChange={(e) =>
-                    handleChange("topBarTextColor", e.target.value)
-                  }
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="secondaryColor">Secondary Color</Label>
-                <Input
-                  id="secondaryColor"
-                  type="color"
-                  value={customization.secondaryColor}
-                  onChange={(e) =>
-                    handleChange("secondaryColor", e.target.value)
-                  }
-                />
-              </div>
-
+              {renderColorField("Primary Color", "primaryColor")}
+              {renderColorField("Top Bar Color", "topBarColor")}
+              {renderColorField("Top Bar Text Color", "topBarTextColor")}
+              {renderColorField("Secondary Color", "secondaryColor")}
+              {renderColorField("Overlay Color", "overlayColor")}
+              {renderColorField("Bottom Bar Color", "bottomBarColor")}
+              {renderColorField("Primary Text Color", "primaryTextColor")}
+              {renderColorField("Secondary Text Color", "secondaryTextColor")}
               <div className="space-y-2">
                 <Label htmlFor="borderRadius">Border Radius</Label>
                 <Input
@@ -118,69 +133,45 @@ export default function CheckoutUiPage() {
                   value={customization.borderRadius}
                   onChange={(e) => handleChange("borderRadius", e.target.value)}
                   placeholder="e.g. 8px"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="overlayColor">Overlay Color</Label>
-                <Input
-                  id="overlayColor"
-                  type="color"
-                  value={customization.overlayColor}
-                  onChange={(e) => handleChange("overlayColor", e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="bottomBarColor">Bottom Bar Color</Label>
-                <Input
-                  id="bottomBarColor"
-                  type="color"
-                  value={customization.bottomBarColor}
-                  onChange={(e) =>
-                    handleChange("bottomBarColor", e.target.value)
-                  }
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="primaryTextColor">Primary Text Color</Label>
-                <Input
-                  id="primaryTextColor"
-                  type="color"
-                  value={customization.primaryTextColor}
-                  onChange={(e) =>
-                    handleChange("primaryTextColor", e.target.value)
-                  }
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="secondaryTextColor">Secondary Text Color</Label>
-                <Input
-                  id="secondaryTextColor"
-                  type="color"
-                  value={customization.secondaryTextColor}
-                  onChange={(e) =>
-                    handleChange("secondaryTextColor", e.target.value)
-                  }
+                  className="w-32"
                 />
               </div>
             </div>
-
-            <Button
-              onClick={handleUpdate}
-              disabled={updateCheckoutUi.isPending}
-            >
-              Update Checkout UI
-            </Button>
+            <div className="flex justify-end gap-3">
+              <Button
+                variant="outline"
+                onClick={handleUndo}
+                disabled={
+                  JSON.stringify(customization) ===
+                  JSON.stringify(lastSavedCustomization)
+                }
+              >
+                Undo Changes
+              </Button>
+              <Button
+                onClick={handleUpdate}
+                disabled={
+                  updateCheckoutUi.isPending ||
+                  JSON.stringify(customization) ===
+                    JSON.stringify(lastSavedCustomization)
+                }
+              >
+                Update Checkout UI
+              </Button>
+            </div>
           </div>
         </Card>
-
-        <Card className="p-6">
+        <Card className="bg-transparent w-full flex-[3] flex items-center justify-center">
           <CheckoutPreview
-            customization={customization}
-            businessProfile={selectedProfile}
+            primaryColor={customization.primaryColor}
+            topBarColor={customization.topBarColor}
+            topBarTextColor={customization.topBarTextColor}
+            secondaryColor={customization.secondaryColor}
+            overlayColor={customization.overlayColor}
+            bottomBarColor={customization.bottomBarColor}
+            primaryTextColor={customization.primaryTextColor}
+            secondaryTextColor={customization.secondaryTextColor}
+            borderRadius={customization.borderRadius}
           />
         </Card>
       </div>

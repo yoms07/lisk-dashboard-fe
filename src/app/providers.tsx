@@ -1,6 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HeroUIProvider } from "@heroui/react";
 import { useState } from "react";
 import { handleAuthError } from "@/lib/utils/auth";
 import { toast } from "sonner";
@@ -53,6 +54,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <HeroUIProvider>{children}</HeroUIProvider>
+    </QueryClientProvider>
   );
 }

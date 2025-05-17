@@ -12,12 +12,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { IconDownload, IconCopy } from "@tabler/icons-react";
+import { IconDownload, IconCopy, IconPlus } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { useBusinessProfileStore } from "@/lib/store/business-profile";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
+import { useRouter } from "next/navigation";
 
 export default function PaymentsPage() {
+  const router = useRouter();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const { getSelectedProfileId } = useBusinessProfileStore();
@@ -118,6 +120,13 @@ export default function PaymentsPage() {
           icon: <IconDownload className="h-4 w-4" />,
           onClick: handleDownloadCSV,
         }}
+        secondaryAction={{
+          label: "Create Payment Link",
+          icon: <IconPlus className="h-4 w-4" />,
+          onClick: () => {
+            router.push(`/dashboard/payments/create`);
+          },
+        }}
       />
 
       <div className="flex items-center gap-4">
@@ -129,7 +138,7 @@ export default function PaymentsPage() {
         />
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-xs border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -138,6 +147,7 @@ export default function PaymentsPage() {
               <TableHead>Status</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Customer</TableHead>
+              <TableHead>Source</TableHead>
               <TableHead>Date</TableHead>
             </TableRow>
           </TableHeader>
@@ -175,6 +185,11 @@ export default function PaymentsPage() {
                     {formatCurrency(payment.pricing.local.amount)}
                   </TableCell>
                   <TableCell>{payment.customer.name}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="capitalize">
+                      {payment.source}
+                    </Badge>
+                  </TableCell>
                   <TableCell>{formatDate(payment.created_at)}</TableCell>
                 </TableRow>
               ))}

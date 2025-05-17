@@ -45,8 +45,8 @@ export default function ApiKeysPage() {
           <CardTitle>Live API Key</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
+          <div className="flex items-center space-x-2 h-full">
+            <code className="relative rounded bg-muted py-2 px-4  font-mono text-sm font-semibold">
               {selectedProfile.api_key?.api_key || "No API key generated"}
             </code>
             <Button

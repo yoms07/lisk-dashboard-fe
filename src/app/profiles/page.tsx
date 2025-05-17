@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useAllBusinessProfiles } from "@/lib/hooks/useAllBusinessProfiles";
 import { BusinessProfile } from "@/lib/api/business_profile/schema";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,9 +7,11 @@ import { PlusCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useBusinessProfileStore } from "@/lib/store/business-profile";
 import { useRouter } from "next/navigation";
+import { CreateProjectOverlay } from "./(components)/create-project-overlay";
 
 export default function ProfilePicker() {
   const router = useRouter();
+  const [isCreateOverlayOpen, setIsCreateOverlayOpen] = useState(false);
   const {
     data: businessProfiles = [],
     isLoading,
@@ -50,7 +53,10 @@ export default function ProfilePicker() {
         <h1 className="text-2xl font-semibold text-left mb-4">Your projects</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-center">
-          <Card className="w-full hover:border-primary/50 cursor-pointer transition-colors">
+          <Card
+            className="w-full hover:border-primary/50 cursor-pointer transition-colors"
+            onClick={() => setIsCreateOverlayOpen(true)}
+          >
             <CardContent className="p-0 flex-col items-center justify-center w-full h-full">
               <div className="flex flex-col items-center justify-center gap-4 h-full">
                 <PlusCircle className="h-10 w-10" />
@@ -90,6 +96,11 @@ export default function ProfilePicker() {
           ))}
         </div>
       </div>
+
+      <CreateProjectOverlay
+        isOpen={isCreateOverlayOpen}
+        onClose={() => setIsCreateOverlayOpen(false)}
+      />
     </div>
   );
 }
