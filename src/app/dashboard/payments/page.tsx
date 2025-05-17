@@ -163,7 +163,9 @@ export default function PaymentsPage() {
               )
               .map((payment) => (
                 <TableRow key={payment.id}>
-                  <TableCell className="font-medium">{payment.id}</TableCell>
+                  <TableCell className="font-medium">
+                    {payment.payment_id}
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {payment.external_id}
