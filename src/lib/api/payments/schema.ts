@@ -39,6 +39,7 @@ export const PaymentSchema = z.object({
       unit_currency: z.literal("IDR"),
     })
   ),
+  txHash: z.string().optional(),
   expired_at: z.string(),
   created_at: z.string(),
   updated_at: z.string(),

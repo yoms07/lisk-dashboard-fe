@@ -33,7 +33,8 @@ export function NavUser() {
   const { isMobile } = useSidebar();
   const { data: session, isLoading } = useSession();
 
-  if (isLoading || !session) {
+  console.log(session);
+  if (isLoading || !session?.accessToken) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>

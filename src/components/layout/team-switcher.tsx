@@ -21,6 +21,7 @@ import { usePathname } from "next/navigation";
 import { BusinessProfile } from "@/lib/api/business_profile/schema";
 import { useBusinessProfileStore } from "@/lib/store/business-profile";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { CreateProjectOverlay } from "@/app/profiles/(components)/create-project-overlay";
 
 function getInitials(name: string): string {
   return name
@@ -37,6 +38,7 @@ export function TeamSwitcher() {
   const pathname = usePathname();
   const activeTeamId = pathname.split("/").pop();
   const { selectedProfile, setSelectedProfile } = useBusinessProfileStore();
+  const [isCreateProjectOpen, setIsCreateProjectOpen] = React.useState(false);
 
   // Only set initial profile if none is selected
   React.useEffect(() => {
@@ -55,76 +57,91 @@ export function TeamSwitcher() {
   }
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="size-8">
-                {selectedProfile?.logo_url ? (
-                  <AvatarImage
-                    src={selectedProfile.logo_url}
-                    alt={selectedProfile.business_name}
-                  />
-                ) : null}
-                <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground">
-                  {selectedProfile?.business_name
-                    ? getInitials(selectedProfile.business_name)
-                    : "?"}
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {selectedProfile
-                    ? selectedProfile.business_name
-                    : "No Active Team"}
-                </span>
-              </div>
-              <ChevronsUpDown className="ml-auto" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            align="start"
-            side={isMobile ? "bottom" : "right"}
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
-            </DropdownMenuLabel>
-            {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.id}
-                onClick={() => handleTeamSwitch(team)}
-                className="gap-2 p-2"
+    <>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
-                <Avatar className="size-6">
-                  {team.logo_url ? (
-                    <AvatarImage src={team.logo_url} alt={team.business_name} />
+                <Avatar className="size-8">
+                  {selectedProfile?.logo_url ? (
+                    <AvatarImage
+                      src={selectedProfile.logo_url}
+                      alt={selectedProfile.business_name}
+                    />
                   ) : null}
-                  <AvatarFallback className="text-xs">
-                    {getInitials(team.business_name)}
+                  <AvatarFallback className="bg-sidebar-primary text-sidebar-primary-foreground">
+                    {selectedProfile?.business_name
+                      ? getInitials(selectedProfile.business_name)
+                      : "?"}
                   </AvatarFallback>
                 </Avatar>
-                {team.business_name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">
+                    {selectedProfile
+                      ? selectedProfile.business_name
+                      : "No Active Team"}
+                  </span>
+                </div>
+                <ChevronsUpDown className="ml-auto" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+              align="start"
+              side={isMobile ? "bottom" : "right"}
+              sideOffset={4}
+            >
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Teams
+              </DropdownMenuLabel>
+              {teams.map((team, index) => (
+                <DropdownMenuItem
+                  key={team.id}
+                  onClick={() => handleTeamSwitch(team)}
+                  className="gap-2 p-2"
+                >
+                  <Avatar className="size-6">
+                    {team.logo_url ? (
+                      <AvatarImage
+                        src={team.logo_url}
+                        alt={team.business_name}
+                      />
+                    ) : null}
+                    <AvatarFallback className="text-xs">
+                      {getInitials(team.business_name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  {team.business_name}
+                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="gap-2 p-2"
+                onClick={() => setIsCreateProjectOpen(true)}
+              >
+                <Avatar className="size-6">
+                  <AvatarFallback className="bg-background">
+                    <Plus className="size-4" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="font-medium text-muted-foreground">
+                  Add team
+                </div>
               </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <Avatar className="size-6">
-                <AvatarFallback className="bg-background">
-                  <Plus className="size-4" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="font-medium text-muted-foreground">Add team</div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+
+      <CreateProjectOverlay
+        isOpen={isCreateProjectOpen}
+        onClose={() => setIsCreateProjectOpen(false)}
+      />
+    </>
   );
 }

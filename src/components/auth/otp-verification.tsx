@@ -45,7 +45,7 @@ export function OtpVerification({ onModeChange, email }: OtpVerificationProps) {
 
       if (result.status === 200) {
         toast.success("Login successful!");
-        router.push("/dashboard");
+        router.push("/profiles");
       } else {
         toast.error(result.message);
       }

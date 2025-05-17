@@ -38,7 +38,7 @@ export async function emailLogin(data: unknown) {
 
     const result = await response.json();
 
-    if (result.status >= 300) {
+    if (result.statusCode >= 300) {
       throw new Error(result.message || "Login failed");
     }
 

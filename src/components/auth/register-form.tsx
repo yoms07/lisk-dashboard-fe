@@ -58,19 +58,19 @@ export function RegisterForm({
     setIsLoading(true);
     try {
       const result = await registerEmail(data);
-      
+
       if (result.status === 200) {
         toast.success(result.message);
         onModeChange(); // Go back to login
       } else {
         toast.error(result.message);
         if (result.errors) {
-          console.error('Validation errors:', result.errors);
+          console.error("Validation errors:", result.errors);
         }
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
-      console.error('Registration error:', error);
+      console.error("Registration error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -153,7 +153,7 @@ export function RegisterForm({
             type="button"
             disabled={isLoading}
             onClick={async () => {
-              await signIn("github", { redirectTo: "/dashboard" });
+              await signIn("github", { redirectTo: "/profiles" });
             }}
           >
             <IconBrandGithub className="h-4 w-4" /> GitHub

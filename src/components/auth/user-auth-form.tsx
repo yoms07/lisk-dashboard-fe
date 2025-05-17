@@ -140,7 +140,7 @@ export function UserAuthForm({
             variant="outline"
             type="button"
             disabled={isLoading}
-            onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+            onClick={() => signIn("github", { callbackUrl: "/profiles" })}
           >
             <IconBrandGithub className="mr-2 h-4 w-4" />
             GitHub

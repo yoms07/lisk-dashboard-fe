@@ -12,17 +12,31 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { IconDownload, IconCopy, IconPlus } from "@tabler/icons-react";
+import {
+  IconDownload,
+  IconCopy,
+  IconPlus,
+  IconExternalLink,
+  IconInfoCircle,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
 import { useBusinessProfileStore } from "@/lib/store/business-profile";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { useRouter } from "next/navigation";
 import { WalletReminder } from "@/components/wallet-reminder";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Payment } from "@/lib/api/payments/schema";
 
 export default function PaymentsPage() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
   const { getSelectedProfileId } = useBusinessProfileStore();
   const businessProfileId = getSelectedProfileId();
 
@@ -66,6 +80,7 @@ export default function PaymentsPage() {
       "Amount",
       "Customer",
       "Date",
+      "Checkout Link",
     ];
     const rows = data.data.data.map((payment) => [
       payment.id,
@@ -74,6 +89,7 @@ export default function PaymentsPage() {
       formatCurrency(payment.pricing.local.amount),
       payment.customer.name,
       formatDate(payment.created_at),
+      `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/payments/${payment.payment_id}`,
     ]);
 
     const csvContent = [
@@ -150,6 +166,8 @@ export default function PaymentsPage() {
               <TableHead>Customer</TableHead>
               <TableHead>Source</TableHead>
               <TableHead>Date</TableHead>
+              <TableHead>Checkout Link</TableHead>
+              <TableHead>Details</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -194,6 +212,45 @@ export default function PaymentsPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>{formatDate(payment.created_at)}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 hover:bg-muted/50"
+                        onClick={() =>
+                          handleCopy(
+                            `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/payments/${payment.payment_id}`
+                          )
+                        }
+                      >
+                        <IconCopy className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 hover:bg-muted/50"
+                        onClick={() =>
+                          window.open(
+                            `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/payments/${payment.payment_id}`,
+                            "_blank"
+                          )
+                        }
+                      >
+                        <IconExternalLink className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 hover:bg-muted/50"
+                      onClick={() => setSelectedPayment(payment)}
+                    >
+                      <IconInfoCircle className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -218,6 +275,139 @@ export default function PaymentsPage() {
           )}
         </div>
       )}
+
+      <Dialog
+        open={!!selectedPayment}
+        onOpenChange={() => setSelectedPayment(null)}
+      >
+        <DialogContent className="max-w-2xl rounded-xs">
+          <DialogHeader>
+            <DialogTitle>Payment Details</DialogTitle>
+          </DialogHeader>
+          {selectedPayment && (
+            <div className="grid gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="font-medium mb-2">Basic Information</h3>
+                  <div className="space-y-2">
+                    <p>
+                      <span className="font-medium">Payment ID:</span>{" "}
+                      {selectedPayment.payment_id}
+                    </p>
+                    <p>
+                      <span className="font-medium">External ID:</span>{" "}
+                      {selectedPayment.external_id}
+                    </p>
+                    <p>
+                      <span className="font-medium">Status:</span>{" "}
+                      <Badge variant={getStatusVariant(selectedPayment.status)}>
+                        {selectedPayment.status}
+                      </Badge>
+                    </p>
+                    <p>
+                      <span className="font-medium">Amount:</span>{" "}
+                      {formatCurrency(selectedPayment.pricing.local.amount)}
+                    </p>
+                    <p>
+                      <span className="font-medium">Source:</span>{" "}
+                      <Badge variant="outline" className="capitalize">
+                        {selectedPayment.source}
+                      </Badge>
+                    </p>
+                    <p>
+                      <span className="font-medium">Created At:</span>{" "}
+                      {formatDate(selectedPayment.created_at)}
+                    </p>
+                    {(() => {
+                      const txHash = selectedPayment.txHash;
+                      console.log(txHash);
+                      if (!txHash) return null;
+                      return (
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">Transaction Hash:</span>
+                          <div className="flex items-center gap-2">
+                            <code className="font-mono text-sm">
+                              {txHash.slice(0, 10)}...{txHash.slice(-10)}
+                            </code>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => handleCopy(txHash)}
+                            >
+                              <IconCopy className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() =>
+                                window.open(
+                                  `https://blockscout.lisk.com/tx/${txHash}`,
+                                  "_blank"
+                                )
+                              }
+                            >
+                              <IconExternalLink className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-medium mb-2">Customer Information</h3>
+                  <div className="space-y-2">
+                    <p>
+                      <span className="font-medium">Name:</span>{" "}
+                      {selectedPayment.customer.name}
+                    </p>
+                    <p>
+                      <span className="font-medium">Email:</span>{" "}
+                      {selectedPayment.customer.email}
+                    </p>
+                    <p>
+                      <span className="font-medium">Phone:</span>{" "}
+                      {selectedPayment.customer.phone}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h3 className="font-medium mb-2">Checkout Link</h3>
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={`${process.env.NEXT_PUBLIC_CHECKOUT_URL}/payments/${selectedPayment.payment_id}`}
+                    readOnly
+                  />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() =>
+                      handleCopy(
+                        `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/payments/${selectedPayment.payment_id}`
+                      )
+                    }
+                  >
+                    <IconCopy className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() =>
+                      window.open(
+                        `${process.env.NEXT_PUBLIC_CHECKOUT_URL}/payments/${selectedPayment.payment_id}`,
+                        "_blank"
+                      )
+                    }
+                  >
+                    <IconExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <WalletReminder />
     </div>
