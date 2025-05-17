@@ -53,7 +53,7 @@ export default async function DashboardLayout({
       {/* ===== Top Heading ===== */}
       <SearchProvider>
         <SkipToMain />
-        <AppSidebar />
+        <AppSidebar session={session} />
         <div
           id="content"
           className={cn(

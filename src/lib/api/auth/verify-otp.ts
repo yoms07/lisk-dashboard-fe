@@ -6,7 +6,6 @@ import { verifyOtpDto, authResponseSchema } from "./schema";
 export async function verifyOtp(data: unknown) {
   try {
     const validatedData = verifyOtpDto.parse(data);
-    console.log(process.env.SERVER_API_URL);
     const response = await fetch(
       `${process.env.SERVER_API_URL}/auth/verify-otp`,
       {
