@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,55 +8,49 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Main } from "@/components/layout/main";
-import { Overview } from "./(components)/overview";
-import { RecentSales } from "./(components)/recent-sales";
+import { Overview } from "@/components/dashboard/overview";
+import { RecentSales } from "@/components/dashboard/recent-sales";
+import { useSession } from "@/lib/hooks/useSession";
+import { Analytics } from "@/components/dashboard/analytics";
+import { Reports } from "@/components/dashboard/reports";
+import { Notifications } from "@/components/dashboard/notifications";
+import { WalletReminder } from "@/components/wallet-reminder";
 
 export default function Dashboard() {
+  const { data: session, isLoading } = useSession();
+  const applicationName = "Lisk PG";
+
   return (
     <div>
-      {/* ===== Top Heading ===== */}
-      {/* <Header>
-        <TopNav links={topNav} />
-        <div className="ml-auto flex items-center space-x-4">
-          <Search />
-          <ThemeSwitch />
-          <ProfileDropdown />
-        </div>
-      </Header> */}
-
-      {/* ===== Main ===== */}
       <Main>
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold tracking-tight">
+            Hi {isLoading ? "..." : session?.name || "User"}, Welcome to{" "}
+            {applicationName}
+          </h1>
+        </div>
         <div className="mb-2 flex items-center justify-between space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-          <div className="flex items-center space-x-2">
-            <Button>Download</Button>
-          </div>
         </div>
         <Tabs
           orientation="vertical"
-          defaultValue="overview"
+          defaultValue="explore"
           className="space-y-4"
         >
           <div className="w-full overflow-x-auto pb-2">
             <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics" disabled>
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger value="reports" disabled>
-                Reports
-              </TabsTrigger>
-              <TabsTrigger value="notifications" disabled>
-                Notifications
-              </TabsTrigger>
+              <TabsTrigger value="explore">Explore</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="reports">Reports</TabsTrigger>
+              <TabsTrigger value="notifications">Notifications</TabsTrigger>
             </TabsList>
           </div>
-          <TabsContent value="overview" className="space-y-4">
+          <TabsContent value="explore" className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Total Revenue
+                    Total Revenue (In Construction)
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +75,7 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Subscriptions
+                    Subscriptions (In Construction)
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +101,9 @@ export default function Dashboard() {
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Sales (In Construction)
+                  </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -133,7 +128,7 @@ export default function Dashboard() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Active Now
+                    Active Now (In Construction)
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -159,7 +154,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
               <Card className="col-span-1 lg:col-span-4">
                 <CardHeader>
-                  <CardTitle>Overview</CardTitle>
+                  <CardTitle>Overview (In Construction)</CardTitle>
                 </CardHeader>
                 <CardContent className="pl-2">
                   <Overview />
@@ -167,7 +162,7 @@ export default function Dashboard() {
               </Card>
               <Card className="col-span-1 lg:col-span-3">
                 <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
+                  <CardTitle>Recent Sales (In Construction)</CardTitle>
                   <CardDescription>
                     You made 265 sales this month.
                   </CardDescription>
@@ -178,8 +173,19 @@ export default function Dashboard() {
               </Card>
             </div>
           </TabsContent>
+          <TabsContent value="analytics">
+            <Analytics />
+          </TabsContent>
+          <TabsContent value="reports">
+            <Reports />
+          </TabsContent>
+          <TabsContent value="notifications">
+            <Notifications />
+          </TabsContent>
         </Tabs>
       </Main>
+
+      <WalletReminder />
     </div>
   );
 }

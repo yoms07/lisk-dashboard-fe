@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useBusinessProfileStore } from "@/lib/store/business-profile";
 import { DashboardHeader } from "@/components/layout/dashboard-header";
 import { useRouter } from "next/navigation";
+import { WalletReminder } from "@/components/wallet-reminder";
 
 export default function PaymentsPage() {
   const router = useRouter();
@@ -215,6 +216,8 @@ export default function PaymentsPage() {
           )}
         </div>
       )}
+
+      <WalletReminder />
     </div>
   );
 }

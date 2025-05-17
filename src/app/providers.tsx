@@ -5,11 +5,22 @@ import { HeroUIProvider } from "@heroui/react";
 import { useState } from "react";
 import { handleAuthError } from "@/lib/utils/auth";
 import { toast } from "sonner";
+import { WagmiProvider } from "wagmi";
+import { createConfig } from "wagmi";
+import { lisk } from "wagmi/chains";
+import { http } from "wagmi";
 
 interface ApiError extends Error {
   status?: number;
   errorType?: string;
 }
+
+const wagmiConfig = createConfig({
+  chains: [lisk],
+  transports: {
+    1135: http(),
+  },
+});
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -54,8 +65,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <HeroUIProvider>{children}</HeroUIProvider>
-    </QueryClientProvider>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <HeroUIProvider>{children}</HeroUIProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }

@@ -38,13 +38,13 @@ export function TeamSwitcher() {
   const activeTeamId = pathname.split("/").pop();
   const { selectedProfile, setSelectedProfile } = useBusinessProfileStore();
 
+  // Only set initial profile if none is selected
   React.useEffect(() => {
-    if (!isLoading) {
-      const team =
-        teams.find((team) => team.id === activeTeamId) || teams[0] || null;
+    if (!isLoading && !selectedProfile && teams.length > 0) {
+      const team = teams.find((team) => team.id === activeTeamId) || teams[0];
       setSelectedProfile(team);
     }
-  }, [teams, activeTeamId, isLoading, setSelectedProfile]);
+  }, [teams, activeTeamId, isLoading, setSelectedProfile, selectedProfile]);
 
   const handleTeamSwitch = (team: BusinessProfile) => {
     setSelectedProfile(team);

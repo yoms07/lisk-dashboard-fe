@@ -10,13 +10,8 @@ import { NavGroup } from "@/components/layout/nav-group";
 import { NavUser } from "@/components/layout/nav-user";
 import { TeamSwitcher } from "@/components/layout/team-switcher";
 import { sidebarData } from "./sidebar-data";
-import { Session } from "@/lib/api/auth/schema";
 
-type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  session: Session;
-};
-
-export function AppSidebar({ ...props }: AppSidebarProps) {
+export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" variant="floating" {...props}>
       <SidebarHeader>
@@ -28,7 +23,7 @@ export function AppSidebar({ ...props }: AppSidebarProps) {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser session={props.session} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

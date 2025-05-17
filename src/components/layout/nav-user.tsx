@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -14,9 +16,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Session } from "@/lib/api/auth/schema";
 import { logout } from "@/lib/api/auth/logout";
 import { redirect } from "next/navigation";
+import { useSession } from "@/lib/hooks/useSession";
 
 function getInitials(name: string) {
   return name
@@ -27,8 +29,27 @@ function getInitials(name: string) {
     .slice(0, 2);
 }
 
-export function NavUser({ session }: { session: Session }) {
+export function NavUser() {
   const { isMobile } = useSidebar();
+  const { data: session, isLoading } = useSession();
+
+  if (isLoading || !session) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg">
+            <Avatar className="h-8 w-8 rounded-lg">
+              <AvatarFallback className="rounded-lg">...</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">Loading...</span>
+              <span className="truncate text-xs">Loading...</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
 
   return (
     <SidebarMenu>

@@ -24,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { WalletReminder } from "@/components/wallet-reminder";
 
 export default function CreatePaymentLinkPage() {
   const router = useRouter();
@@ -496,6 +497,8 @@ export default function CreatePaymentLinkPage() {
           </div>
         </form>
       </Card>
+
+      <WalletReminder />
     </div>
   );
 }
