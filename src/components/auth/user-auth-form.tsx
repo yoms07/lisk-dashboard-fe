@@ -3,7 +3,7 @@ import { HTMLAttributes, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconBrandFacebook, IconBrandGithub } from "@tabler/icons-react";
+import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -140,14 +140,19 @@ export function UserAuthForm({
             variant="outline"
             type="button"
             disabled={isLoading}
+            onClick={() => signIn("google", { callbackUrl: "/profiles" })}
+          >
+            <IconBrandGoogle className="mr-2 h-4 w-4" />
+            Google
+          </Button>
+          <Button
+            variant="outline"
+            type="button"
+            disabled={isLoading}
             onClick={() => signIn("github", { callbackUrl: "/profiles" })}
           >
             <IconBrandGithub className="mr-2 h-4 w-4" />
             GitHub
-          </Button>
-          <Button variant="outline" type="button" disabled={isLoading}>
-            <IconBrandFacebook className="mr-2 h-4 w-4" />
-            Facebook
           </Button>
         </div>
       </CardContent>
